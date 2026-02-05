@@ -1,4 +1,5 @@
 import json
+from http.client import responses
 
 from config import API_TOKEN
 import telebot
@@ -8,6 +9,7 @@ from lxml import etree
 import subscribe
 from subscribe import ADMIN_ID, load_user_set
 import time
+import AI
 
 def take_usd_to_rub():
     html = requests.get('https://www.banki.ru/products/currency/cash/usd/moskva/').content
@@ -68,6 +70,9 @@ def handler_photo(message):
 @bot.message_handler(content_types=['text'])
 def text_handler(message):
     print(f"[{message.chat.first_name}]: {message.text}")
+    bot_responce = AI.ai_responce(message.text)
+    bot.send_message(message.chat.id, bot_responce)
+    print(f"[BOT]: {bot_responce}")
 
 
 
