@@ -3,32 +3,11 @@ from http.client import responses
 
 from config import API_TOKEN
 import telebot
-import lxml.html
-import requests
-from lxml import etree
 import subscribe
 from subscribe import ADMIN_ID, load_user_set
 import time
 import AI
-
-def take_usd_to_rub():
-    html = requests.get('https://www.banki.ru/products/currency/cash/usd/moskva/').content
-    tree = lxml.html.document_fromstring(html)
-    result = tree.xpath("/html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/section/div/div/div/div[2]/div[2]")
-    return(result[0].text)
-
-def take_eur_to_rub():
-    html = requests.get("https://www.banki.ru/products/currency/cash/eur/moskva/").content
-    tree = lxml.html.document_fromstring(html)
-    result = tree.xpath("/html/body/div[2]/div/div/div/div/div[3]/div[2]/div[1]/div/section/div/div/div/div[2]/div[2]/text()")
-    return result[0]
-
-def take_last_news():
-    html = requests.get('https://ria.ru/economy/').content
-    tree = lxml.html.document_fromstring(html)
-    result = tree.xpath("//a[contains(@class,'list-item__title color-font-hover-only')]/text()")
-    return f"\nНовостные сводки:\n📰{'\n\n📰'.join(result[i] for i in range(len(result[:3])))}"
-
+from values import take_usd_to_rub, take_eur_to_rub, take_last_news
 
 bot = telebot.TeleBot(API_TOKEN)
 
@@ -70,9 +49,9 @@ def handler_photo(message):
 @bot.message_handler(content_types=['text'])
 def text_handler(message):
     print(f"[{message.chat.first_name}]: {message.text}")
-    bot_responce = AI.ai_responce(message.text)
-    bot.send_message(message.chat.id, bot_responce)
-    print(f"[BOT]: {bot_responce}")
+    bot_response = AI.ai_response(message.text)
+    bot.send_message(message.chat.id, bot_response)
+    print(f"[BOT]: {bot_response}")
 
 
 
